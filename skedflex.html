@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkedFlex — Fitness Instructor App</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-mid: #9FE1CB;
+    --teal-dark: #0F6E56;
+    --teal-deep: #085041;
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --surface2: #F0EEE9;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.13);
+    --text: #1A1A18;
+    --text2: #6B6B66;
+    --text3: #9E9E99;
+    --hiit: #E8501A;
+    --hiit-bg: #FDF0EB;
+    --pilates: #1D9E75;
+    --pilates-bg: #E1F5EE;
+    --yoga: #7B5EA7;
+    --yoga-bg: #F2EEFA;
+    --strength: #C07A1A;
+    --strength-bg: #FDF3E3;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --sidebar: 220px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 10;
+  }
+
+  .logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--teal);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-icon svg { width: 18px; height: 18px; }
+
+  .logo-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+
+  .logo-tagline {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.02em;
+    padding-left: 42px;
+  }
+
+  .nav {
+    flex: 1;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nav-section {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 12px 10px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text2);
+    font-size: 13.5px;
+    font-weight: 400;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: var(--teal-light); color: var(--teal-dark); font-weight: 500; }
+
+  .nav-icon {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    background: transparent;
+  }
+
+  .nav-item.active .nav-icon { background: rgba(29,158,117,0.15); }
+
+  .nav-icon svg { width: 16px; height: 16px; }
+
+  .user-section {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .user-name { font-size: 13px; font-weight: 500; }
+  .user-role { font-size: 11px; color: var(--text3); }
+
+  /* ── Main ── */
+  .main {
+    margin-left: var(--sidebar);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
+  .page-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+  .page-subtitle { font-size: 12px; color: var(--text3); }
+
+  .topbar-right { display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn:hover { background: var(--surface2); border-color: var(--border2); }
+
+  .btn-primary {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
+
+  .btn svg { width: 14px; height: 14px; }
+
+  .content {
+    padding: 28px;
+    flex: 1;
+  }
+
+  /* ── Views ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── Schedule ── */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .week-nav-btn {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .week-nav-btn:hover { background: var(--surface2); }
+  .week-nav-btn svg { width: 14px; height: 14px; }
+  .week-label { font-size: 14px; font-weight: 500; color: var(--text2); }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+  }
+
+  .day-col { display: flex; flex-direction: column; gap: 6px; }
+
+  .day-header {
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+  }
+
+  .day-header .day-name {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  .day-header .day-num {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .day-header.today { background: var(--teal-light); }
+  .day-header.today .day-name { color: var(--teal-dark); }
+  .day-header.today .day-num { color: var(--teal); }
+
+  .session-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: var(--radius-sm);
+    padding: 9px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+  }
+
+  .session-block:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--teal-mid); }
+  .session-block.private { border-left-color: var(--yoga); }
+  .session-block.hiit { border-left-color: var(--hiit); }
+  .session-block.yoga { border-left-color: var(--yoga); }
+  .session-block.active-session { box-shadow: 0 0 0 2px var(--teal); }
+
+  .sblock-time {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 3px;
+  }
+
+  .sblock-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sblock-client {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .add-slot {
+    border: 1px dashed var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .add-slot:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
+
+  /* Session detail panel */
+  .detail-panel {
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: none;
+    animation: slideIn 0.2s ease;
+  }
+
+  @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .detail-panel.visible { display: block; }
+
+  .detail-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .detail-title { font-size: 15px; font-weight: 600; }
+  .detail-subtitle { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .detail-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .detail-field {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-field:nth-last-child(-n+2) { border-bottom: none; }
+
+  .detail-key {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .detail-val { font-size: 14px; font-weight: 500; color: var(--text); }
+
+  .detail-actions {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    background: var(--surface2);
+  }
+
+  /* ── Routines ── */
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .filter-chip:hover { border-color: var(--teal); color: var(--teal); }
+  .filter-chip.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+  .search-input {
+    margin-left: auto;
+    padding: 7px 14px;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    width: 200px;
+    outline: none;
+    transition: all 0.15s;
+  }
+
+  .search-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
+  .search-input::placeholder { color: var(--text3); }
+
+  .routines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .routine-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .routine-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .routine-card.pilates::before { background: var(--pilates); }
+  .routine-card.hiit::before { background: var(--hiit); }
+  .routine-card.yoga::before { background: var(--yoga); }
+  .routine-card.strength::before { background: var(--strength); }
+
+  .routine-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+  .routine-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .tag-pilates { background: var(--pilates-bg); color: var(--pilates); }
+  .tag-hiit { background: var(--hiit-bg); color: var(--hiit); }
+  .tag-yoga { background: var(--yoga-bg); color: var(--yoga); }
+  .tag-strength { background: var(--strength-bg); color: var(--strength); }
+
+  .routine-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.2px; }
+  .routine-meta { font-size: 12px; color: var(--text3); }
+  .routine-exercises { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  .routine-footer {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .routine-footer-label { font-size: 11px; color: var(--text3); }
+  .routine-footer-val { font-size: 12px; font-weight: 500; color: var(--text2); }
+
+  /* ── Clients ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text3);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .stat-num {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .stat-change {
+    font-size: 11px;
+    color: var(--teal);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .clients-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1.5fr 1fr 1fr;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text3);
+  }
+
+  .client-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1.5fr 1fr 1fr;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+
+  .client-row:last-child { border-bottom: none; }
+  .client-row:hover { background: var(--surface2); }
+
+  .client-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .client-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .av-teal { background: var(--teal-light); color: var(--teal-dark); }
+  .av-purple { background: var(--yoga-bg); color: var(--yoga); }
+  .av-amber { background: var(--strength-bg); color: var(--strength); }
+  .av-coral { background: var(--hiit-bg); color: var(--hiit); }
+  .av-gray { background: var(--surface2); color: var(--text2); }
+
+  .client-fullname { font-size: 13px; font-weight: 500; }
+  .client-email { font-size: 11px; color: var(--text3); }
+
+  .cell-text { font-size: 13px; color: var(--text2); }
+
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .s-active { background: var(--teal-light); color: var(--teal-dark); }
+  .s-new { background: var(--yoga-bg); color: var(--yoga); }
+  .s-paused { background: var(--surface2); color: var(--text3); }
+
+  /* ── Timer ── */
+  .timer-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .timer-main {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+
+  .timer-session-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .timer-session-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 32px;
+  }
+
+  .timer-ring-wrap {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 32px;
+  }
+
+  .timer-ring {
+    transform: rotate(-90deg);
+    width: 220px;
+    height: 220px;
+  }
+
+  .ring-bg {
+    fill: none;
+    stroke: var(--surface2);
+    stroke-width: 8;
+  }
+
+  .ring-progress {
+    fill: none;
+    stroke: var(--teal);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 628;
+    stroke-dashoffset: 628;
+    transition: stroke-dashoffset 0.9s linear;
+  }
+
+  .ring-progress.rest { stroke: var(--yoga); }
+
+  .timer-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .timer-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 44px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .timer-phase {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--teal);
+    margin-top: 6px;
+  }
+
+  .timer-phase.rest { color: var(--yoga); }
+
+  .timer-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .timer-btn {
+    padding: 12px 32px;
+    border-radius: 40px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .timer-btn:hover { background: var(--surface2); }
+  .timer-btn.start { background: var(--teal); border-color: var(--teal); color: #fff; min-width: 120px; }
+  .timer-btn.start:hover { background: var(--teal-dark); }
+  .timer-btn.reset { color: var(--text2); }
+
+  .round-indicators {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .round-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border2);
+    transition: all 0.3s;
+  }
+
+  .round-dot.done { background: var(--teal); }
+  .round-dot.current { background: var(--teal); box-shadow: 0 0 0 3px var(--teal-light); }
+
+  .timer-settings {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .settings-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .settings-body { padding: 16px 20px; }
+
+  .setting-group { margin-bottom: 20px; }
+  .setting-group:last-child { margin-bottom: 0; }
+
+  .setting-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text3);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .interval-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .ichip {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text2);
+  }
+
+  .ichip:hover { border-color: var(--teal); color: var(--teal); }
+  .ichip.sel { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .setting-row:last-child { border-bottom: none; }
+  .setting-row-label { font-size: 13px; color: var(--text2); }
+  .setting-row-val { font-size: 13px; font-weight: 500; font-family: 'DM Mono', monospace; }
+
+  .num-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .num-btn {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    color: var(--text2);
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1;
+  }
+
+  .num-btn:hover { background: var(--surface2); }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s;
+    z-index: 100;
+    max-width: 280px;
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    width: 480px;
+    max-width: calc(100vw - 40px);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    animation: slideIn 0.2s ease;
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-title { font-size: 15px; font-weight: 600; }
+
+  .modal-close {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    color: var(--text2);
+    transition: all 0.15s;
+    line-height: 1;
+  }
+
+  .modal-close:hover { background: var(--surface2); }
+
+  .modal-body { padding: 24px; }
+
+  .form-group { margin-bottom: 18px; }
+  .form-group:last-child { margin-bottom: 0; }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: all 0.15s;
+    appearance: none;
+  }
+
+  .form-input:focus, .form-select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    background: var(--surface2);
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/>
+        </svg>
+      </div>
+      <span class="logo-name">SkedFlex</span>
+    </div>
+    <div class="logo-tagline">by trainers, for trainers</div>
+  </div>
+
+  <div class="nav">
+    <div class="nav-section">Main</div>
+    <div class="nav-item active" onclick="showView('schedule',this)" id="nav-schedule">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>
+        </svg>
+      </div>
+      Schedule
+    </div>
+    <div class="nav-item" onclick="showView('routines',this)" id="nav-routines">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+      </div>
+      Routines
+    </div>
+    <div class="nav-item" onclick="showView('clients',this)" id="nav-clients">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+      </div>
+      Clients
+    </div>
+    <div class="nav-item" onclick="showView('timer',this)" id="nav-timer">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      Timer
+    </div>
+  </div>
+
+  <div class="user-section">
+    <div class="avatar">IL</div>
+    <div>
+      <div class="user-name">Irina L.</div>
+      <div class="user-role">Pilates · HIIT</div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="page-title" id="page-title">Schedule</div>
+        <div class="page-subtitle" id="page-subtitle">Week of May 5 – 11, 2026</div>
+      </div>
+    </div>
+    <div class="topbar-right" id="topbar-actions">
+      <button class="btn" onclick="topbarSecondary()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+        Filter
+      </button>
+      <button class="btn btn-primary" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span id="primary-btn-label">New session</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Schedule View -->
+    <div class="view active" id="view-schedule">
+      <div class="week-nav">
+        <button class="week-nav-btn" onclick="toast('Previous week')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="week-label">May 5 – 11, 2026</span>
+        <button class="week-nav-btn" onclick="toast('Next week')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <div class="week-grid">
+        <div class="day-col">
+          <div class="day-header"><div class="day-name">Mon</div><div class="day-num">5</div></div>
+          <div class="session-block pilates" onclick="openDetail('Reformer Pilates','9:00 AM','Group — Studio B','Reformer Flow Vol.3','60 min','Pilates')">
+            <div class="sblock-time">9:00 AM</div>
+            <div class="sblock-name">Reformer Pilates</div>
+            <div class="sblock-client">Group · Studio B</div>
+          </div>
+          <div class="session-block private" onclick="openDetail('Private: HIIT','11:30 AM','Marcus T.','HIIT Circuit A','45 min','HIIT')">
+            <div class="sblock-time">11:30 AM</div>
+            <div class="sblock-name">Private: HIIT</div>
+            <div class="sblock-client">Marcus T.</div>
+          </div>
+        </div>
+
+        <div class="day-col">
+          <div class="day-header today"><div class="day-name">Tue</div><div class="day-num">6</div></div>
+          <div class="session-block pilates" onclick="openDetail('Mat Pilates','8:00 AM','Group — Studio A','Mat Basics Vol.1','55 min','Pilates')">
+            <div class="sblock-time">8:00 AM</div>
+            <div class="sblock-name">Mat Pilates</div>
+            <div class="sblock-client">Group · Studio A</div>
+          </div>
+          <div class="add-slot" onclick="openModal()">+ add session</div>
+        </div>
+
+        <div class="day-col">
+          <div class="day-header"><div class="day-name">Wed</div><div class="day-num">7</div></div>
+          <div class="session-block yoga" onclick="openDetail('Yoga Flow','10:00 AM','Group — Studio A','Vinyasa Flow 2','60 min','Yoga')">
+            <div class="sblock-time">10:00 AM</div>
+            <div class="sblock-name">Yoga Flow</div>
+            <div class="sblock-client">Group · Studio A</div>
+          </div>
+          <div class="session-block private" onclick="openDetail('Private: Pilates','2:00 PM','Jenna R.','Reformer Flow Vol.2','45 min','Pilates')">
+            <div class="sblock-time">2:00 PM</div>
+            <div class="sblock-name">Private: Pilates</div>
+            <div class="sblock-client">Jenna R.</div>
+          </div>
+        </div>
+
+        <div class="day-col">
+          <div class="day-header"><div class="day-name">Thu</div><div class="day-num">8</div></div>
+          <div class="session-block hiit" onclick="openDetail('HIIT Class','7:00 AM','Group — Studio C','HIIT Circuit B','45 min','HIIT')">
+            <div class="sblock-time">7:00 AM</div>
+            <div class="sblock-name">HIIT Class</div>
+            <div class="sblock-client">Group · Studio C</div>
+          </div>
+          <div class="add-slot" onclick="openModal()">+ add session</div>
+        </div>
+
+        <div class="day-col">
+          <div class="day-header"><div class="day-name">Fri</div><div class="day-num">9</div></div>
+          <div class="session-block pilates" onclick="openDetail('Reformer Pilates','9:00 AM','Group — Studio B','Reformer Flow Vol.1','60 min','Pilates')">
+            <div class="sblock-time">9:00 AM</div>
+            <div class="sblock-name">Reformer Pilates</div>
+            <div class="sblock-client">Group · Studio B</div>
+          </div>
+          <div class="session-block private" onclick="openDetail('Private: Strength','4:00 PM','Marcus T.','Strength & Tone A','50 min','Strength')">
+            <div class="sblock-time">4:00 PM</div>
+            <div class="sblock-name">Private: Strength</div>
+            <div class="sblock-client">Marcus T.</div>
+          </div>
+        </div>
+
+        <div class="day-col">
+          <div class="day-header"><div class="day-name">Sat</div><div class="day-num">10</div></div>
+          <div class="session-block yoga" onclick="openDetail('Weekend Flow','10:30 AM','Group — Studio A','Vinyasa Flow 1','75 min','Yoga')">
+            <div class="sblock-time">10:30 AM</div>
+            <div class="sblock-name">Weekend Flow</div>
+            <div class="sblock-client">Group · Studio A</div>
+          </div>
+        </div>
+
+        <div class="day-col">
+          <div class="day-header"><div class="day-name">Sun</div><div class="day-num">11</div></div>
+          <div class="add-slot" onclick="openModal()">+ add session</div>
+        </div>
+      </div>
+
+      <div class="detail-panel" id="detail-panel">
+        <div class="detail-header">
+          <div>
+            <div class="detail-title" id="d-name">—</div>
+            <div class="detail-subtitle" id="d-time">—</div>
+          </div>
+          <div id="d-tag-badge"></div>
+        </div>
+        <div class="detail-body">
+          <div class="detail-field">
+            <div class="detail-key">Client / Class</div>
+            <div class="detail-val" id="d-client">—</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-key">Duration</div>
+            <div class="detail-val" id="d-dur">—</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-key">Routine</div>
+            <div class="detail-val" id="d-routine">—</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-key">Studio</div>
+            <div class="detail-val">Studio B</div>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn btn-primary" onclick="goToTimer()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Start timer
+          </button>
+          <button class="btn" onclick="showView('routines', document.getElementById('nav-routines'))">View routine</button>
+          <button class="btn" onclick="toast('Edit session — coming soon!')">Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Routines View -->
+    <div class="view" id="view-routines">
+      <div class="filter-bar">
+        <button class="filter-chip active" onclick="filterRoutines(this,'all')">All</button>
+        <button class="filter-chip" onclick="filterRoutines(this,'pilates')">Pilates</button>
+        <button class="filter-chip" onclick="filterRoutines(this,'hiit')">HIIT</button>
+        <button class="filter-chip" onclick="filterRoutines(this,'yoga')">Yoga</button>
+        <button class="filter-chip" onclick="filterRoutines(this,'strength')">Strength</button>
+        <input type="text" class="search-input" placeholder="Search routines..." oninput="searchRoutines(this.value)">
+      </div>
+
+      <div class="routines-grid" id="routines-grid">
+        <div class="routine-card pilates" data-tag="pilates" data-name="Reformer Flow Vol.1">
+          <span class="routine-tag tag-pilates">Pilates</span>
+          <div class="routine-name">Reformer Flow Vol.1</div>
+          <div class="routine-meta">60 min · 12 exercises</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Fri May 9</span>
+          </div>
+        </div>
+        <div class="routine-card pilates" data-tag="pilates" data-name="Reformer Flow Vol.2">
+          <span class="routine-tag tag-pilates">Pilates</span>
+          <div class="routine-name">Reformer Flow Vol.2</div>
+          <div class="routine-meta">45 min · 9 exercises</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Wed May 7</span>
+          </div>
+        </div>
+        <div class="routine-card pilates" data-tag="pilates" data-name="Reformer Flow Vol.3">
+          <span class="routine-tag tag-pilates">Pilates</span>
+          <div class="routine-name">Reformer Flow Vol.3</div>
+          <div class="routine-meta">60 min · 14 exercises</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Mon May 5</span>
+          </div>
+        </div>
+        <div class="routine-card pilates" data-tag="pilates" data-name="Mat Basics Vol.1">
+          <span class="routine-tag tag-pilates">Pilates</span>
+          <div class="routine-name">Mat Basics Vol.1</div>
+          <div class="routine-meta">55 min · 10 exercises</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Tue May 6</span>
+          </div>
+        </div>
+        <div class="routine-card hiit" data-tag="hiit" data-name="HIIT Circuit A">
+          <span class="routine-tag tag-hiit">HIIT</span>
+          <div class="routine-name">HIIT Circuit A</div>
+          <div class="routine-meta">45 min · 6 rounds</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Mon May 5</span>
+          </div>
+        </div>
+        <div class="routine-card hiit" data-tag="hiit" data-name="HIIT Circuit B">
+          <span class="routine-tag tag-hiit">HIIT</span>
+          <div class="routine-name">HIIT Circuit B</div>
+          <div class="routine-meta">45 min · 8 rounds</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Thu May 8</span>
+          </div>
+        </div>
+        <div class="routine-card yoga" data-tag="yoga" data-name="Vinyasa Flow 1">
+          <span class="routine-tag tag-yoga">Yoga</span>
+          <div class="routine-name">Vinyasa Flow 1</div>
+          <div class="routine-meta">75 min · 20 poses</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Sat May 10</span>
+          </div>
+        </div>
+        <div class="routine-card yoga" data-tag="yoga" data-name="Vinyasa Flow 2">
+          <span class="routine-tag tag-yoga">Yoga</span>
+          <div class="routine-name">Vinyasa Flow 2</div>
+          <div class="routine-meta">60 min · 18 poses</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Wed May 7</span>
+          </div>
+        </div>
+        <div class="routine-card strength" data-tag="strength" data-name="Strength & Tone A">
+          <span class="routine-tag tag-strength">Strength</span>
+          <div class="routine-name">Strength &amp; Tone A</div>
+          <div class="routine-meta">50 min · 8 exercises</div>
+          <div class="routine-footer">
+            <span class="routine-footer-label">Last used</span>
+            <span class="routine-footer-val">Fri May 9</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clients View -->
+    <div class="view" id="view-clients">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Active clients</div>
+          <div class="stat-num">8</div>
+          <div class="stat-change">+2 this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Sessions this month</div>
+          <div class="stat-num">24</div>
+          <div class="stat-change">↑ 4 from last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Studios</div>
+          <div class="stat-num">3</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Routines saved</div>
+          <div class="stat-num">9</div>
+          <div class="stat-change">+1 this week</div>
+        </div>
+      </div>
+
+      <div class="clients-table">
+        <div class="table-header">
+          <div class="th">Name</div>
+          <div class="th">Focus</div>
+          <div class="th">Frequency</div>
+          <div class="th">Status</div>
+          <div class="th">Sessions</div>
+        </div>
+        <div class="client-row" onclick="toast('Sophie K. — 12 sessions completed')">
+          <div class="client-name-cell">
+            <div class="client-avatar av-teal">SK</div>
+            <div><div class="client-fullname">Sophie K.</div><div class="client-email">sophie@email.com</div></div>
+          </div>
+          <div class="cell-text">Reformer Pilates</div>
+          <div class="cell-text">Weekly</div>
+          <div><span class="status-badge s-active">Active</span></div>
+          <div class="cell-text" style="font-family:'DM Mono',monospace">12</div>
+        </div>
+        <div class="client-row" onclick="toast('Marcus T. — 18 sessions completed')">
+          <div class="client-name-cell">
+            <div class="client-avatar av-purple">MT</div>
+            <div><div class="client-fullname">Marcus T.</div><div class="client-email">marcus@email.com</div></div>
+          </div>
+          <div class="cell-text">HIIT + Strength</div>
+          <div class="cell-text">2× per week</div>
+          <div><span class="status-badge s-active">Active</span></div>
+          <div class="cell-text" style="font-family:'DM Mono',monospace">18</div>
+        </div>
+        <div class="client-row" onclick="toast('Jenna R. — 7 sessions completed')">
+          <div class="client-name-cell">
+            <div class="client-avatar av-amber">JR</div>
+            <div><div class="client-fullname">Jenna R.</div><div class="client-email">jenna@email.com</div></div>
+          </div>
+          <div class="cell-text">Private Pilates</div>
+          <div class="cell-text">Bi-weekly</div>
+          <div><span class="status-badge s-active">Active</span></div>
+          <div class="cell-text" style="font-family:'DM Mono',monospace">7</div>
+        </div>
+        <div class="client-row" onclick="toast('Anna L. — just getting started!')">
+          <div class="client-name-cell">
+            <div class="client-avatar av-coral">AL</div>
+            <div><div class="client-fullname">Anna L.</div><div class="client-email">anna@email.com</div></div>
+          </div>
+          <div class="cell-text">Mat Pilates</div>
+          <div class="cell-text">Weekly</div>
+          <div><span class="status-badge s-new">New</span></div>
+          <div class="cell-text" style="font-family:'DM Mono',monospace">2</div>
+        </div>
+        <div class="client-row" onclick="toast('Daniel M. — 9 sessions completed')">
+          <div class="client-name-cell">
+            <div class="client-avatar av-teal">DM</div>
+            <div><div class="client-fullname">Daniel M.</div><div class="client-email">daniel@email.com</div></div>
+          </div>
+          <div class="cell-text">Yoga Flow</div>
+          <div class="cell-text">Weekly</div>
+          <div><span class="status-badge s-active">Active</span></div>
+          <div class="cell-text" style="font-family:'DM Mono',monospace">9</div>
+        </div>
+        <div class="client-row" onclick="toast('Priya S. — on break')">
+          <div class="client-name-cell">
+            <div class="client-avatar av-gray">PS</div>
+            <div><div class="client-fullname">Priya S.</div><div class="client-email">priya@email.com</div></div>
+          </div>
+          <div class="cell-text">Reformer Pilates</div>
+          <div class="cell-text">Monthly</div>
+          <div><span class="status-badge s-paused">Paused</span></div>
+          <div class="cell-text" style="font-family:'DM Mono',monospace">5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timer View -->
+    <div class="view" id="view-timer">
+      <div class="timer-layout">
+        <div class="timer-main">
+          <div class="timer-session-label">Current session</div>
+          <div class="timer-session-name" id="timer-session-name">HIIT Circuit B — Group Studio C</div>
+
+          <div class="timer-ring-wrap">
+            <svg class="timer-ring" viewBox="0 0 220 220">
+              <circle class="ring-bg" cx="110" cy="110" r="100"/>
+              <circle class="ring-progress" id="ring-progress" cx="110" cy="110" r="100"/>
+            </svg>
+            <div class="timer-center">
+              <div class="timer-time" id="timer-display">00:00</div>
+              <div class="timer-phase" id="timer-phase">Ready</div>
+            </div>
+          </div>
+
+          <div class="timer-controls">
+            <button class="timer-btn start" id="start-btn" onclick="toggleTimer()">Start</button>
+            <button class="timer-btn reset" onclick="resetTimer()">Reset</button>
+          </div>
+
+          <div class="round-indicators" id="round-dots"></div>
+          <div style="font-size:12px;color:var(--text3);margin-top:12px">Round <span id="round-num">1</span> of <span id="total-rounds">8</span></div>
+        </div>
+
+        <div class="timer-settings">
+          <div class="settings-header">Interval settings</div>
+          <div class="settings-body">
+            <div class="setting-group">
+              <div class="setting-label">Work duration</div>
+              <div class="interval-chips">
+                <button class="ichip" onclick="setWork(this,20)">20s</button>
+                <button class="ichip" onclick="setWork(this,30)">30s</button>
+                <button class="ichip sel" onclick="setWork(this,40)">40s</button>
+                <button class="ichip" onclick="setWork(this,45)">45s</button>
+                <button class="ichip" onclick="setWork(this,60)">60s</button>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-label">Rest duration</div>
+              <div class="interval-chips">
+                <button class="ichip" onclick="setRest(this,10)">10s</button>
+                <button class="ichip sel" onclick="setRest(this,20)">20s</button>
+                <button class="ichip" onclick="setRest(this,30)">30s</button>
+                <button class="ichip" onclick="setRest(this,60)">60s</button>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-label">Rounds</div>
+              <div class="num-input">
+                <button class="num-btn" onclick="adjustRounds(-1)">−</button>
+                <span id="rounds-display" style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;min-width:28px;text-align:center">8</span>
+                <button class="num-btn" onclick="adjustRounds(1)">+</button>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-label">Summary</div>
+              <div class="setting-row">
+                <span class="setting-row-label">Work</span>
+                <span class="setting-row-val" id="s-work">40s</span>
+              </div>
+              <div class="setting-row">
+                <span class="setting-row-label">Rest</span>
+                <span class="setting-row-val" id="s-rest">20s</span>
+              </div>
+              <div class="setting-row">
+                <span class="setting-row-label">Total time</span>
+                <span class="setting-row-val" id="s-total">8:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- New Session Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">New session</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Session name</label>
+          <input class="form-input" type="text" placeholder="e.g. Reformer Pilates">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select class="form-select">
+            <option>Group class</option>
+            <option>Private session</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input class="form-input" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input class="form-input" type="time">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Client / class</label>
+          <select class="form-select">
+            <option>Group — Studio A</option>
+            <option>Group — Studio B</option>
+            <option>Group — Studio C</option>
+            <option>Sophie K.</option>
+            <option>Marcus T.</option>
+            <option>Jenna R.</option>
+            <option>Anna L.</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duration</label>
+          <select class="form-select">
+            <option>30 min</option>
+            <option>45 min</option>
+            <option selected>60 min</option>
+            <option>75 min</option>
+            <option>90 min</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Attach routine</label>
+        <select class="form-select">
+          <option value="">— No routine attached —</option>
+          <option>Reformer Flow Vol.1</option>
+          <option>Reformer Flow Vol.2</option>
+          <option>Reformer Flow Vol.3</option>
+          <option>Mat Basics Vol.1</option>
+          <option>HIIT Circuit A</option>
+          <option>HIIT Circuit B</option>
+          <option>Vinyasa Flow 1</option>
+          <option>Vinyasa Flow 2</option>
+          <option>Strength &amp; Tone A</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSession()">Save session</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  var timerInterval = null;
+  var running = false;
+  var workSecs = 40;
+  var restSecs = 20;
+  var totalRounds = 8;
+  var currentRound = 1;
+  var currentSecs = 0;
+  var isRest = false;
+  var circumference = 2 * Math.PI * 100;
+
+  var views = {
+    schedule: { title: 'Schedule', subtitle: 'Week of May 5 – 11, 2026', primary: 'New session' },
+    routines: { title: 'Routines', subtitle: '9 routines saved', primary: 'New routine' },
+    clients:  { title: 'Clients',  subtitle: '8 active clients', primary: 'Add client' },
+    timer:    { title: 'Timer',    subtitle: 'Interval & circuit timer', primary: 'Back to schedule' }
+  };
+
+  function showView(v, el) {
+    document.querySelectorAll('.view').forEach(function(x) { x.classList.remove('active'); });
+    document.querySelectorAll('.nav-item').forEach(function(x) { x.classList.remove('active'); });
+    document.getElementById('view-' + v).classList.add('active');
+    if (el) el.classList.add('active');
+    document.getElementById('page-title').textContent = views[v].title;
+    document.getElementById('page-subtitle').textContent = views[v].subtitle;
+    document.getElementById('primary-btn-label').textContent = views[v].primary;
+  }
+
+  function topbarSecondary() {
+    toast('Filters — coming soon in v2!');
+  }
+
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modal')) closeModal();
+  }
+
+  function saveSession() {
+    closeModal();
+    toast('Session saved to schedule!');
+  }
+
+  function openDetail(name, time, client, routine, dur, type) {
+    document.querySelectorAll('.session-block').forEach(function(b) { b.classList.remove('active-session'); });
+    event.currentTarget.classList.add('active-session');
+    document.getElementById('d-name').textContent = name;
+    document.getElementById('d-time').textContent = time;
+    document.getElementById('d-client').textContent = client;
+    document.getElementById('d-routine').textContent = routine;
+    document.getElementById('d-dur').textContent = dur;
+    var tagColors = { Pilates: 'tag-pilates', HIIT: 'tag-hiit', Yoga: 'tag-yoga', Strength: 'tag-strength' };
+    var badge = document.getElementById('d-tag-badge');
+    badge.className = 'routine-tag ' + (tagColors[type] || 'tag-pilates');
+    badge.textContent = type;
+    var panel = document.getElementById('detail-panel');
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.getElementById('timer-session-name').textContent = name + ' — ' + client;
+  }
+
+  function goToTimer() {
+    showView('timer', document.getElementById('nav-timer'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function filterRoutines(el, tag) {
+    document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
+    el.classList.add('active');
+    document.querySelectorAll('.routine-card').forEach(function(c) {
+      c.style.display = (tag === 'all' || c.dataset.tag === tag) ? 'block' : 'none';
+    });
+  }
+
+  function searchRoutines(val) {
+    var q = val.toLowerCase();
+    document.querySelectorAll('.routine-card').forEach(function(c) {
+      c.style.display = c.dataset.name.toLowerCase().includes(q) ? 'block' : 'none';
+    });
+    document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
+    document.querySelector('.filter-chip').classList.add('active');
+  }
+
+  function buildDots() {
+    var wrap = document.getElementById('round-dots');
+    wrap.innerHTML = '';
+    for (var i = 0; i < totalRounds; i++) {
+      var d = document.createElement('div');
+      d.className = 'round-dot' + (i === 0 ? ' current' : '');
+      d.id = 'dot-' + i;
+      wrap.appendChild(d);
+    }
+    document.getElementById('total-rounds').textContent = totalRounds;
+  }
+
+  function updateDots() {
+    for (var i = 0; i < totalRounds; i++) {
+      var d = document.getElementById('dot-' + i);
+      if (!d) continue;
+      d.className = 'round-dot' + (i < currentRound - 1 ? ' done' : i === currentRound - 1 ? ' current' : '');
+    }
+  }
+
+  function updateRing(secs, total, rest) {
+    var progress = secs / total;
+    var offset = circumference - (progress * circumference);
+    var ring = document.getElementById('ring-progress');
+    ring.style.strokeDashoffset = offset;
+    ring.classList.toggle('rest', rest);
+  }
+
+  function padTime(s) {
+    var m = Math.floor(s / 60);
+    var sec = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function updateSummary() {
+    document.getElementById('s-work').textContent = workSecs + 's';
+    document.getElementById('s-rest').textContent = restSecs + 's';
+    var total = (workSecs + restSecs) * totalRounds;
+    document.getElementById('s-total').textContent = padTime(total);
+  }
+
+  function setWork(el, s) {
+    document.querySelectorAll('.interval-chips').item(0).querySelectorAll('.ichip').forEach(function(c) { c.classList.remove('sel'); });
+    el.classList.add('sel');
+    workSecs = s;
+    resetTimer();
+    updateSummary();
+  }
+
+  function setRest(el, s) {
+    document.querySelectorAll('.interval-chips').item(1).querySelectorAll('.ichip').forEach(function(c) { c.classList.remove('sel'); });
+    el.classList.add('sel');
+    restSecs = s;
+    resetTimer();
+    updateSummary();
+  }
+
+  function adjustRounds(d) {
+    totalRounds = Math.max(1, Math.min(20, totalRounds + d));
+    document.getElementById('rounds-display').textContent = totalRounds;
+    resetTimer();
+    updateSummary();
+  }
+
+  function toggleTimer() {
+    if (running) {
+      clearInterval(timerInterval);
+      running = false;
+      document.getElementById('start-btn').textContent = 'Resume';
+    } else {
+      running = true;
+      document.getElementById('start-btn').textContent = 'Pause';
+      timerInterval = setInterval(function() {
+        currentSecs++;
+        var limit = isRest ? restSecs : workSecs;
+        if (currentSecs >= limit) {
+          currentSecs = 0;
+          if (!isRest) {
+            isRest = true;
+            document.getElementById('timer-phase').textContent = 'Rest';
+            document.getElementById('timer-phase').classList.add('rest');
+          } else {
+            isRest = false;
+            currentRound++;
+            document.getElementById('timer-phase').textContent = 'Work!';
+            document.getElementById('timer-phase').classList.remove('rest');
+            if (currentRound > totalRounds) {
+              clearInterval(timerInterval);
+              running = false;
+              document.getElementById('timer-phase').textContent = 'Done!';
+              document.getElementById('start-btn').textContent = 'Start';
+              currentRound = totalRounds;
+              return;
+            }
+          }
+          updateDots();
+        }
+        document.getElementById('round-num').textContent = currentRound;
+        var limit2 = isRest ? restSecs : workSecs;
+        document.getElementById('timer-display').textContent = padTime(currentSecs);
+        updateRing(currentSecs, limit2, isRest);
+      }, 1000);
+    }
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    running = false;
+    currentSecs = 0;
+    currentRound = 1;
+    isRest = false;
+    document.getElementById('timer-display').textContent = '00:00';
+    document.getElementById('timer-phase').textContent = 'Ready';
+    document.getElementById('timer-phase').classList.remove('rest');
+    document.getElementById('start-btn').textContent = 'Start';
+    document.getElementById('ring-progress').style.strokeDashoffset = circumference;
+    document.getElementById('ring-progress').classList.remove('rest');
+    document.getElementById('round-num').textContent = '1';
+    buildDots();
+  }
+
+  var toastTimer;
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2500);
+  }
+
+  buildDots();
+  updateSummary();
+  document.getElementById('ring-progress').style.strokeDasharray = circumference;
+  document.getElementById('ring-progress').style.strokeDashoffset = circumference;
+</script>
+</body>
+</html>
