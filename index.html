@@ -957,6 +957,196 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
+
+  /* ── Splash screen ── */
+  .splash {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #F2EEE6;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .splash.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .splash-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(29,158,117,0.07);
+  }
+
+  .splash-bg-circle.c1 {
+    width: 420px; height: 420px;
+    top: -120px; right: -100px;
+  }
+
+  .splash-bg-circle.c2 {
+    width: 280px; height: 280px;
+    bottom: -60px; left: -80px;
+    background: rgba(29,158,117,0.05);
+  }
+
+  .splash-bg-circle.c3 {
+    width: 160px; height: 160px;
+    top: 40%; left: 10%;
+    background: rgba(193,158,100,0.08);
+  }
+
+  .splash-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    animation: splashFadeUp 0.9s ease forwards;
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes splashFadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .splash-icon {
+    width: 72px; height: 72px;
+    background: var(--teal, #1D9E75);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 32px rgba(29,158,117,0.25);
+  }
+
+  .splash-icon svg { width: 36px; height: 36px; }
+
+  .splash-greeting {
+    font-family: "DM Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #9E9E99;
+    margin-bottom: 10px;
+  }
+
+  .splash-name {
+    font-family: "DM Sans", sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #1A1A18;
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+
+  .splash-tagline {
+    font-family: "DM Sans", sans-serif;
+    font-size: 14px;
+    color: #9E9E99;
+    margin-bottom: 52px;
+    font-weight: 400;
+  }
+
+  .splash-enter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1D9E75;
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 14px 36px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(29,158,117,0.3);
+    animation: splashBtnPulse 2.5s ease-in-out infinite;
+    animation-delay: 1s;
+  }
+
+  @keyframes splashBtnPulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(29,158,117,0.3); }
+    50%       { box-shadow: 0 4px 32px rgba(29,158,117,0.5); }
+  }
+
+  .splash-enter:hover {
+    background: #0F6E56;
+    transform: translateY(-1px);
+  }
+
+  .splash-enter svg { width: 16px; height: 16px; }
+
+  .splash-dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 40px;
+  }
+
+  .splash-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(29,158,117,0.25);
+  }
+
+  .splash-dot.active {
+    background: #1D9E75;
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  .splash-time {
+    position: absolute;
+    bottom: 40px;
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    color: #C0BDB5;
+    letter-spacing: 0.05em;
+  }
+
+  /* stats strip */
+  .splash-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 0;
+    margin-bottom: 40px;
+    animation: splashFadeUp 0.9s ease 0.2s both;
+  }
+
+  .splash-stat {
+    text-align: center;
+  }
+
+  .splash-stat-num {
+    font-family: "DM Mono", monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: #1A1A18;
+  }
+
+  .splash-stat-lbl {
+    font-size: 11px;
+    color: #B0ADA6;
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  .splash-divider {
+    width: 1px;
+    height: 36px;
+    background: rgba(0,0,0,0.1);
+    align-self: center;
+  }
+
   /* ── Bottom nav (mobile only) ── */
   .bottom-nav {
     display: none;
@@ -1110,6 +1300,63 @@
 <body>
 
 <!-- Sidebar -->
+<!-- Splash screen -->
+<div class="splash" id="splash" onclick="enterApp()">
+  <div class="splash-bg-circle c1"></div>
+  <div class="splash-bg-circle c2"></div>
+  <div class="splash-bg-circle c3"></div>
+
+  <div class="splash-inner">
+    <div class="splash-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="3" y1="9" x2="21" y2="9"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="14" x2="10" y2="14"/>
+        <line x1="14" y1="14" x2="16" y2="14"/>
+      </svg>
+    </div>
+
+    <div class="splash-greeting">Welcome back</div>
+    <div class="splash-name">Irina &#x1F44B;</div>
+    <div class="splash-tagline">Ready for today?</div>
+
+    <div class="splash-stats">
+      <div class="splash-stat">
+        <div class="splash-stat-num">3</div>
+        <div class="splash-stat-lbl">Sessions today</div>
+      </div>
+      <div class="splash-divider"></div>
+      <div class="splash-stat">
+        <div class="splash-stat-num">8</div>
+        <div class="splash-stat-lbl">Clients</div>
+      </div>
+      <div class="splash-divider"></div>
+      <div class="splash-stat">
+        <div class="splash-stat-num">9</div>
+        <div class="splash-stat-lbl">Routines</div>
+      </div>
+    </div>
+
+    <button class="splash-enter" onclick="enterApp()">
+      Enter app
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+
+    <div class="splash-dots">
+      <div class="splash-dot active"></div>
+      <div class="splash-dot"></div>
+      <div class="splash-dot"></div>
+    </div>
+  </div>
+
+  <div class="splash-time" id="splash-time"></div>
+</div>
+
 <nav class="sidebar">
   <div class="logo">
     <div class="logo-mark">
@@ -1917,6 +2164,25 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2500);
   }
+
+
+  function enterApp() {
+    document.getElementById('splash').classList.add('hidden');
+  }
+
+  function updateSplashTime() {
+    var el = document.getElementById('splash-time');
+    if (!el) return;
+    var now = new Date();
+    var h = now.getHours();
+    var m = now.getMinutes();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    el.textContent = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm + '  ·  ' + now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  }
+
+  updateSplashTime();
+  setInterval(updateSplashTime, 30000);
 
   buildDots();
   updateSummary();
